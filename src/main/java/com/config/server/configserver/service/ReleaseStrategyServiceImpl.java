@@ -18,6 +18,7 @@ public class ReleaseStrategyServiceImpl implements ReleaseStrategyService {
 
     @Override
     public List<ReleaseStrategyDto> getAllReleaseStrategyByConfig(String configkey, String name) {
+
         String sql1 = "SELECT config_value FROM config WHERE config_key = ?";
         String configValue = jdbcTemplate.queryForObject(sql1, new Object[]{configkey}, String.class);
         List<String> enabledValues = (configValue != null && !configValue.isEmpty())

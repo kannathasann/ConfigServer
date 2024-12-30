@@ -108,16 +108,21 @@ public class ConfigServiceImpl implements ConfigService {
 
 
     @Override
-    public ConfigDto updateConfig(String configKey, List<String> configValuesList) {
+    @CachePut(value = "featureConfigs", key = "#featureId.toString()")
+    public List<ConfigDto> updateConfig(int featureId,String configKey, List<String> configValuesList) {
         String configValue = String.join(",", configValuesList);
         int result = configRepo.updateConfig(configKey, configValue);
-        if (result > 0) {
-            ConfigEntity savedEntity = configRepo.findByConfigKey(configKey);
-            ConfigDto configDto = new ConfigDto();
-            BeanUtils.copyProperties(savedEntity, configDto);
-            return configDto;
-        }
-        return null;
+
+            List<ConfigEntity> configEntityList=configRepo.getAllConfigsByFeature(featureId);
+            List<ConfigDto> configDtoList= new ArrayList<>();
+            for(ConfigEntity configEntity1: configEntityList)
+            {
+                ConfigDto configDto1=  new ConfigDto();
+                BeanUtils.copyProperties(configEntity1, configDto1);
+                configDtoList.add(configDto1);
+
+            }
+            return configDtoList;
 
     }
 

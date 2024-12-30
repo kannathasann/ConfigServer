@@ -62,8 +62,8 @@ public class ConfigController {
     }
 
     @PutMapping("/updateConfig")
-    public ResponseEntity<ConfigDto> updateConfig(@RequestParam String configKey, @RequestBody List<String> configValuesList) {
-        ConfigDto configDto = configService.updateConfig(configKey, configValuesList);
+    public ResponseEntity<List<ConfigDto>> updateConfig(@RequestParam int featureId, @RequestParam String configKey, @RequestBody List<String> configValuesList) {
+        List<ConfigDto> configDto = configService.updateConfig(featureId,configKey, configValuesList);
         return new ResponseEntity<>(configDto, HttpStatus.OK);
 
     }

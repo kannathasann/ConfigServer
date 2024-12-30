@@ -17,7 +17,7 @@ public interface ConfigService {
 
     public List<ConfigDto> createConfig(int featureId,ConfigDto configDto);
 
-    public ConfigDto updateConfig(String configKey, List<String> configValuesList);
+    public List<ConfigDto> updateConfig(int featureId,String configKey, List<String> configValuesList);
 
     public String deleteConfig(String configKey);
 }
