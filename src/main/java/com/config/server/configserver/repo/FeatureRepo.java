@@ -16,8 +16,6 @@ public interface FeatureRepo extends JpaRepository<FeatureEntity, Integer> {
     @Query("SELECT a FROM AppEntity a JOIN a.features f WHERE f.id = :featureId")
     public List<AppEntity> getAllAppsByFeature(@Param("featureId") int featureId);
 
-    @Query("select c from ConfigEntity c join c.features f where f.id=:featureId")
-    public List<ConfigEntity> getAllConfigsByFeature(@Param("featureId") int featureId);
 
 
     @Modifying

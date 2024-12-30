@@ -5,10 +5,12 @@ import com.config.server.configserver.dto.ConfigDto;
 import com.config.server.configserver.dto.FeatureDto;
 import com.config.server.configserver.service.ConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -17,6 +19,9 @@ public class ConfigController {
 
     @Autowired
     ConfigService configService;
+
+    @Value("${predefined.config.names}")
+    private String predefinedConfigNames;
 
     @GetMapping("/test")
     public ResponseEntity<String> test() {
@@ -27,6 +32,13 @@ public class ConfigController {
     public ResponseEntity<List<ConfigDto>> getAllConfigs() {
         List<ConfigDto> configDtoList = configService.getAllConfigs();
         return new ResponseEntity<>(configDtoList, HttpStatus.OK);
+    }
+    @GetMapping("/getAllConfigsByFeature/{id}")
+    public ResponseEntity<List<ConfigDto>> getAllConfigsByFeature(@PathVariable("id") int featureId)
+    {
+        List<ConfigDto> configDtoList=configService.getAllConfigsByFeature(featureId);
+        return new ResponseEntity<>(configDtoList, HttpStatus.OK);
+
     }
 
     @GetMapping("/getAllFeaturesByConfig/{id}")
@@ -44,8 +56,8 @@ public class ConfigController {
     }
 
     @PostMapping("/createConfig")
-    public ResponseEntity<ConfigDto> createConfig(@RequestParam int featureId, @RequestBody ConfigDto configDto) {
-        ConfigDto responseDto = configService.createConfig(featureId, configDto);
+    public ResponseEntity<List<ConfigDto>> createConfig(@RequestParam int featureId, @RequestBody ConfigDto configDto) {
+        List<ConfigDto> responseDto = configService.createConfig(featureId, configDto);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
@@ -61,5 +73,12 @@ public class ConfigController {
 
         String response = configService.deleteConfig(configKey);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+
+    @GetMapping("/config/predefinedNames")
+    public List<String> getPredefinedConfigNames() {
+        return Arrays.asList(predefinedConfigNames.split(","));
     }
 }

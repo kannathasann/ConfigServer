@@ -9,6 +9,7 @@ import com.config.server.configserver.entity.FeatureEntity;
 import com.config.server.configserver.repo.FeatureRepo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,8 +20,7 @@ import java.util.stream.Collectors;
 public class FeatureServiceImpl implements FeatureService {
 
     @Autowired
-    FeatureRepo
-            featureRepo;
+    FeatureRepo featureRepo;
 
     @Override
     public List<FeatureDto> getAllFeatures() {
@@ -46,16 +46,6 @@ public class FeatureServiceImpl implements FeatureService {
         return appDtoList;
     }
 
-    @Override
-    public List<ConfigDto> getAllConfigsByFeature(int featureId) {
-        List<ConfigEntity> configEntityList = featureRepo.getAllConfigsByFeature(featureId);
-        List<ConfigDto> configDtoList = configEntityList.stream().map(configEntity -> {
-            ConfigDto configDto = new ConfigDto();
-            BeanUtils.copyProperties(configEntity, configDto);
-            return configDto;
-        }).collect(Collectors.toList());
-        return configDtoList;
-    }
 
     @Override
     @Transactional

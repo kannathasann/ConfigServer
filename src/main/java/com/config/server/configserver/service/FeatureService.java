@@ -11,7 +11,7 @@ import java.util.List;
 public interface FeatureService {
     public List<FeatureDto> getAllFeatures();
     public List<AppDto> getAllAppsByFeature(int featureId);
-    public List<ConfigDto> getAllConfigsByFeature(int featureId);
+
     public FeatureDto createFeature(int appId, FeatureDto featureDto );
     public String deleteFeature(int id);
 

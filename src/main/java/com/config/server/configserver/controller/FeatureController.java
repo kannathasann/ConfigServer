@@ -34,13 +34,7 @@ public class FeatureController
 
     }
 
-    @GetMapping("/getAllConfigsByFeature/{id}")
-    public ResponseEntity<List<ConfigDto>> getAllConfigsByFeature(@PathVariable("id") int featureId)
-    {
-        List<ConfigDto> configDtoList=featureService.getAllConfigsByFeature(featureId);
-        return new ResponseEntity<>(configDtoList, HttpStatus.OK);
 
-    }
 
     @PostMapping("/createFeature")
     public ResponseEntity<FeatureDto> createFeature(@RequestParam int appId, @RequestBody FeatureDto featureDto)

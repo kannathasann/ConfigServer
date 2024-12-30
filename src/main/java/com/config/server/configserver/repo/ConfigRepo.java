@@ -12,6 +12,10 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ConfigRepo extends JpaRepository<ConfigEntity, Integer> {
+
+    @Query("select c from ConfigEntity c join c.features f where f.id=:featureId")
+    public List<ConfigEntity> getAllConfigsByFeature(@Param("featureId") int featureId);
+
     @Query("SELECT f FROM FeatureEntity f JOIN f.configs c WHERE c.id = :configId")
     public List<FeatureEntity> getAllFeaturesByConfig(@Param("configId") int configId);
 

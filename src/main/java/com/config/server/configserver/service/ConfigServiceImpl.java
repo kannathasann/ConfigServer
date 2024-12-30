@@ -11,8 +11,13 @@ import com.config.server.configserver.repo.FeatureRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +30,9 @@ public class ConfigServiceImpl implements ConfigService {
     @Autowired
     FeatureRepo featureRepo;
 
+    @Autowired
+    RedisTemplate<String, Object> redisTemplate;
+
     @Override
     public List<ConfigDto> getAllConfigs() {
         List<ConfigEntity> configEntityList = configRepo.findAll();
@@ -34,6 +42,19 @@ public class ConfigServiceImpl implements ConfigService {
             return configDto;
         }).collect(Collectors.toList());
 
+        return configDtoList;
+    }
+
+    @Override
+    @Cacheable(value = "featureConfigs", key="#featureId.toString()")
+    public List<ConfigDto> getAllConfigsByFeature(int featureId) {
+        System.out.println("Fetching Config data from external DB........");
+        List<ConfigEntity> configEntityList = configRepo.getAllConfigsByFeature(featureId);
+        List<ConfigDto> configDtoList = configEntityList.stream().map(configEntity -> {
+            ConfigDto configDto = new ConfigDto();
+            BeanUtils.copyProperties(configEntity, configDto);
+            return configDto;
+        }).collect(Collectors.toList());
         return configDtoList;
     }
 
@@ -63,7 +84,8 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     @Transactional
-    public ConfigDto createConfig(int featureId, ConfigDto configDto) {
+    @CachePut(value = "featureConfigs", key = "#featureId.toString()")
+    public List<ConfigDto> createConfig(int featureId, ConfigDto configDto) {
         // Convert DTO to Entity
         ConfigEntity configEntity = new ConfigEntity();
         BeanUtils.copyProperties(configDto, configEntity);
@@ -72,13 +94,16 @@ public class ConfigServiceImpl implements ConfigService {
         int configId = savedEntity.getId();
 
         int result = configRepo.createFeatureConfig(configId, featureId);
+        List<ConfigEntity> configEntityList=configRepo.getAllConfigsByFeature(featureId);
+        List<ConfigDto> configDtoList= new ArrayList<>();
+        for(ConfigEntity configEntity1: configEntityList)
+        {
+            ConfigDto configDto1=  new ConfigDto();
+            BeanUtils.copyProperties(configEntity1, configDto1);
+            configDtoList.add(configDto1);
 
-
-        // Convert the saved ConfigEntity back to DTO
-        ConfigDto savedConfigDto = new ConfigDto();
-        BeanUtils.copyProperties(savedEntity, savedConfigDto);
-
-        return savedConfigDto;
+        }
+        return configDtoList;
     }
 
 

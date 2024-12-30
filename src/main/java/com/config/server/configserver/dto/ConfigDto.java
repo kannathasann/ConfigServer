@@ -1,16 +1,25 @@
 package com.config.server.configserver.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-public class ConfigDto {
+import java.io.Serializable;
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class ConfigDto implements  Serializable{
 
+    @JsonProperty("id")
     private int id;
+    @JsonProperty("desc")
     private String desc;
+    @JsonProperty("configName")
     private String configName;
+    @JsonProperty("configKey")
     private String configKey;
+    @JsonProperty("configValue")
     private String configValue;
 
     public int getId() {
