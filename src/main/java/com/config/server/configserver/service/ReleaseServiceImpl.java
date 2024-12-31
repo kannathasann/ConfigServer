@@ -1,6 +1,6 @@
 package com.config.server.configserver.service;
 
-import com.config.server.configserver.dto.ReleaseStrategyDto;
+import com.config.server.configserver.dto.ReleaseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -10,14 +10,14 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
-public class ReleaseStrategyServiceImpl implements ReleaseStrategyService {
+public class ReleaseServiceImpl implements ReleaseService {
 
 
     @Autowired
     JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<ReleaseStrategyDto> getAllReleaseStrategyByConfig(String configkey, String name) {
+    public List<ReleaseDto> getAllReleaseByConfig(String configkey, String name) {
 
         String sql1 = "SELECT config_value FROM config WHERE config_key = ?";
         String configValue = jdbcTemplate.queryForObject(sql1, new Object[]{configkey}, String.class);
@@ -26,9 +26,9 @@ public class ReleaseStrategyServiceImpl implements ReleaseStrategyService {
                 : new ArrayList<>();
 
         String sql = "select * from " + name + "";
-        List<ReleaseStrategyDto> releaseStrategyDtoList = jdbcTemplate.query(sql, (resultSet, rows) ->
+        List<ReleaseDto> releaseStrategyDtoList = jdbcTemplate.query(sql, (resultSet, rows) ->
         {
-            ReleaseStrategyDto releaseStrategyDto = new ReleaseStrategyDto();
+            ReleaseDto releaseStrategyDto = new ReleaseDto();
             releaseStrategyDto.setId(resultSet.getInt("id"));
             releaseStrategyDto.setName(resultSet.getString("name"));
             String tempId = String.valueOf(releaseStrategyDto.getId());

@@ -1,6 +1,6 @@
 package com.config.server.configserver.dto;
 
-public class ReleaseStrategyDto {
+public class ReleaseDto {
     private int id;
     private String name;
     private String status;
