@@ -7,10 +7,7 @@ import com.config.server.configserver.service.AppService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,15 +24,12 @@ public class AppController {
         List<AppDto> appDtoList= appService.getAllApps();
         return new ResponseEntity<>(appDtoList, HttpStatus.OK);
     }
-    @GetMapping("/getAllFeaturesByApp/{id}")
-    public ResponseEntity<List<FeatureDto>> getAllFeaturesByApp(@PathVariable("id") int appId) {
-        List<FeatureDto> featureDtoList=appService.getAllFeaturesByApp(appId);
-        return new ResponseEntity<>(featureDtoList, HttpStatus.OK);
-    }
 
-    @GetMapping("/getAllConfigsByApp/{id}")
-    public ResponseEntity<List<ConfigDto>> getAllConfigsByApp(@PathVariable("id") int appId) {
-        List<ConfigDto> ConfigDtoList=appService.getAllConfigsByDto(appId);
-        return new ResponseEntity<>(ConfigDtoList, HttpStatus.OK);
+    @PostMapping("/createApp")
+    public ResponseEntity<AppDto> createApp(@RequestBody AppDto appDto)
+    {
+        AppDto response=appService.createApp(appDto);
+        return new ResponseEntity<>(response,HttpStatus.OK);
+
     }
 }

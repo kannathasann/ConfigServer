@@ -13,41 +13,32 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
-public class FeatureController
-{
+public class FeatureController {
     @Autowired
     FeatureService featureService;
 
     @GetMapping("/getAllFeatures")
-    public ResponseEntity<List<FeatureDto>> getAllFeatures()
-    {
-        List<FeatureDto> featureDtoList=featureService.getAllFeatures();
+    public ResponseEntity<List<FeatureDto>> getAllFeatures() {
+        List<FeatureDto> featureDtoList = featureService.getAllFeatures();
         return new ResponseEntity<>(featureDtoList, HttpStatus.OK);
-
-
-    }
-    @GetMapping("/getAllAppsByFeature/{id}")
-    public ResponseEntity<List<AppDto>> getAllAppsByFeature(@PathVariable("id") int featureId)
-    {
-        List<AppDto> appDtoList=featureService.getAllAppsByFeature(featureId);
-        return new ResponseEntity<>(appDtoList, HttpStatus.OK);
-
     }
 
-
+    @GetMapping("/getAllFeaturesByApp/{id}")
+    public ResponseEntity<List<FeatureDto>> getAllFeaturesByApp(@PathVariable int id) {
+        List<FeatureDto> featureDtoList = featureService.getAllFeaturesByApp(id);
+        return new ResponseEntity<>(featureDtoList, HttpStatus.OK);
+    }
 
     @PostMapping("/createFeature")
-    public ResponseEntity<FeatureDto> createFeature(@RequestParam int appId, @RequestBody FeatureDto featureDto)
-    {
-        FeatureDto response=featureService.createFeature(appId, featureDto);
+    public ResponseEntity<FeatureDto> createFeature(@RequestBody FeatureDto featureDto) {
+        FeatureDto response = featureService.createFeature(featureDto);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
 
     }
 
     @DeleteMapping("/deleteFeature")
-    public ResponseEntity<String> deleteFeature(@RequestParam int id)
-    {
-        String result=featureService.deleteFeature(id);
+    public ResponseEntity<String> deleteFeature(@RequestParam int id) {
+        String result = featureService.deleteFeature(id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

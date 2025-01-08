@@ -17,20 +17,19 @@ public class ReleaseServiceImpl implements ReleaseService {
     JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<ReleaseDto> getAllReleaseByConfig(String configkey, String name) {
+    public List<ReleaseDto> getAllReleaseByConfig(String configkey, String configQuery) {
 
-        String sql1 = "SELECT config_value FROM config WHERE config_key = ?";
-        String configValue = jdbcTemplate.queryForObject(sql1, new Object[]{configkey}, String.class);
+        String sql = "SELECT config_values FROM config WHERE config_key = ?";
+        String configValue = jdbcTemplate.queryForObject(sql, new Object[]{configkey}, String.class);
         List<String> enabledValues = (configValue != null && !configValue.isEmpty())
                 ? Arrays.asList(configValue.split(","))
                 : new ArrayList<>();
 
-        String sql = "select * from " + name + "";
-        List<ReleaseDto> releaseStrategyDtoList = jdbcTemplate.query(sql, (resultSet, rows) ->
+        List<ReleaseDto> releaseStrategyDtoList = jdbcTemplate.query(configQuery, (resultSet, rows) ->
         {
             ReleaseDto releaseStrategyDto = new ReleaseDto();
-            releaseStrategyDto.setId(resultSet.getInt("id"));
-            releaseStrategyDto.setName(resultSet.getString("name"));
+            releaseStrategyDto.setId(resultSet.getInt(1));
+            releaseStrategyDto.setName(resultSet.getString(2));
             String tempId = String.valueOf(releaseStrategyDto.getId());
             if (enabledValues.contains(tempId))
                 releaseStrategyDto.setStatus("enabled");

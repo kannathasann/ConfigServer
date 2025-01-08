@@ -46,10 +46,10 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     @Override
-    @Cacheable(value = "featureConfigs", key="#featureId.toString()")
+//    @Cacheable(value = "featureConfigs", key="#featureId.toString()")
     public List<ConfigDto> getAllConfigsByFeature(int featureId) {
         System.out.println("Fetching Config data from external DB........");
-        List<ConfigEntity> configEntityList = configRepo.getAllConfigsByFeature(featureId);
+        List<ConfigEntity> configEntityList = configRepo.findAllByFeatureId(featureId);
         List<ConfigDto> configDtoList = configEntityList.stream().map(configEntity -> {
             ConfigDto configDto = new ConfigDto();
             BeanUtils.copyProperties(configEntity, configDto);
@@ -58,43 +58,21 @@ public class ConfigServiceImpl implements ConfigService {
         return configDtoList;
     }
 
-    @Override
-    public List<FeatureDto> getAllFeaturesByConfig(int configId) {
-        List<FeatureEntity> featureEntityList = configRepo.getAllFeaturesByConfig(configId);
-        List<FeatureDto> featureDtoList = featureEntityList.stream().map(featureEntity -> {
-            FeatureDto featureDto = new FeatureDto();
-            BeanUtils.copyProperties(featureEntity, featureDto);
-            return featureDto;
-        }).collect(Collectors.toList());
-        return featureDtoList;
-    }
 
-    @Override
-    public List<AppDto> getAllAppsByConfig(int configId) {
-        List<AppEntity> appEntityList = configRepo.getAllAppsByConfig(configId);
-        List<AppDto> appDtoList = appEntityList.stream().map(appEntity -> {
-            AppDto appDto = new AppDto();
-            BeanUtils.copyProperties(appEntity, appDto);
-            return appDto;
-        }).collect(Collectors.toList());
-        return appDtoList;
 
-    }
 
 
     @Override
     @Transactional
-    @CachePut(value = "featureConfigs", key = "#featureId.toString()")
-    public List<ConfigDto> createConfig(int featureId, ConfigDto configDto) {
+//    @CachePut(value = "featureConfigs", key = "#configDto.featureId.toString()")
+    public List<ConfigDto> createConfig( ConfigDto configDto) {
         // Convert DTO to Entity
         ConfigEntity configEntity = new ConfigEntity();
         BeanUtils.copyProperties(configDto, configEntity);
         // Save the new ConfigEntity
         ConfigEntity savedEntity = configRepo.save(configEntity);
-        int configId = savedEntity.getId();
-
-        int result = configRepo.createFeatureConfig(configId, featureId);
-        List<ConfigEntity> configEntityList=configRepo.getAllConfigsByFeature(featureId);
+        int featureId=configDto.getFeatureId();
+        List<ConfigEntity> configEntityList=configRepo.findAllByFeatureId(featureId);
         List<ConfigDto> configDtoList= new ArrayList<>();
         for(ConfigEntity configEntity1: configEntityList)
         {
@@ -108,12 +86,12 @@ public class ConfigServiceImpl implements ConfigService {
 
 
     @Override
-    @CachePut(value = "featureConfigs", key = "#featureId.toString()")
+//    @CachePut(value = "featureConfigs", key = "#featureId.toString()")
     public List<ConfigDto> updateConfig(int featureId,String configKey, List<String> configValuesList) {
         String configValue = String.join(",", configValuesList);
         int result = configRepo.updateConfig(configKey, configValue);
 
-            List<ConfigEntity> configEntityList=configRepo.getAllConfigsByFeature(featureId);
+            List<ConfigEntity> configEntityList=configRepo.findAllByFeatureId(featureId);
             List<ConfigDto> configDtoList= new ArrayList<>();
             for(ConfigEntity configEntity1: configEntityList)
             {

@@ -23,35 +23,24 @@ public class AppServiceImpl implements AppService {
 
     public List<AppDto> getAllApps() {
         List<AppEntity> appEntityList = appRepo.findAll();
-       List<AppDto> appDtoList= appEntityList.stream().map(appEntity ->
+        List<AppDto> appDtoList = appEntityList.stream().map(appEntity ->
         {
-            AppDto appDto= new AppDto();
+            AppDto appDto = new AppDto();
             BeanUtils.copyProperties(appEntity, appDto);
             return appDto;
         }).collect(Collectors.toList());
-       return appDtoList;
+        return appDtoList;
     }
 
     @Override
-    public List<FeatureDto> getAllFeaturesByApp(int appId) {
-       List<FeatureEntity> featureEntityList= appRepo.getAllFeaturesByApp(appId);
-       List<FeatureDto> featureDtoList=featureEntityList.stream().map(featureEntity -> {
-           FeatureDto featureDto= new FeatureDto();
-           BeanUtils.copyProperties(featureEntity, featureDto);
-           return featureDto;
-       }).collect(Collectors.toList());
-       return featureDtoList;
-    }
+    public AppDto createApp(AppDto appDto) {
+        AppEntity appEntity = new AppEntity();
+        BeanUtils.copyProperties(appDto, appEntity);
+        AppEntity savedEntity = appRepo.save(appEntity);
+        AppDto response = new AppDto();
+        BeanUtils.copyProperties(appEntity, response);
+        return response;
 
-    @Override
-    public List<ConfigDto> getAllConfigsByDto(int appId) {
-        List<ConfigEntity> configEntityList=appRepo.getAllConfigsByApp(appId);
-        List<ConfigDto> configDtoList=configEntityList.stream().map(configEntity -> {
-            ConfigDto configDto= new ConfigDto();
-            BeanUtils.copyProperties(configEntity,configDto);
-            return configDto;
-        }).collect(Collectors.toList());
-        return configDtoList;
     }
 
 

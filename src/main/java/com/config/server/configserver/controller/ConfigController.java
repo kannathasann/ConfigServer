@@ -20,12 +20,9 @@ public class ConfigController {
     @Autowired
     ConfigService configService;
 
-    @Value("${predefined.config.names}")
-    private String predefinedConfigNames;
-
     @GetMapping("/test")
     public ResponseEntity<String> test() {
-        return new ResponseEntity<>("hello world", HttpStatus.OK);
+        return new ResponseEntity<>("test method", HttpStatus.OK);
     }
 
     @GetMapping("/getAllConfigs")
@@ -33,37 +30,24 @@ public class ConfigController {
         List<ConfigDto> configDtoList = configService.getAllConfigs();
         return new ResponseEntity<>(configDtoList, HttpStatus.OK);
     }
+
     @GetMapping("/getAllConfigsByFeature/{id}")
-    public ResponseEntity<List<ConfigDto>> getAllConfigsByFeature(@PathVariable("id") int featureId)
-    {
-        List<ConfigDto> configDtoList=configService.getAllConfigsByFeature(featureId);
+    public ResponseEntity<List<ConfigDto>> getAllConfigsByFeature(@PathVariable("id") int featureId) {
+        List<ConfigDto> configDtoList = configService.getAllConfigsByFeature(featureId);
         return new ResponseEntity<>(configDtoList, HttpStatus.OK);
 
     }
 
-    @GetMapping("/getAllFeaturesByConfig/{id}")
-    public ResponseEntity<List<FeatureDto>> getAllFeaturesByConfig(@PathVariable("id") int configId) {
-        List<FeatureDto> featureDtoList = configService.getAllFeaturesByConfig(configId);
-        return new ResponseEntity<>(featureDtoList, HttpStatus.OK);
-
-    }
-
-    @GetMapping("/getAllAppsByConfig/{id}")
-    public ResponseEntity<List<AppDto>> getAllAppsByConfig(@PathVariable("id") int configId) {
-        List<AppDto> appDtoList = configService.getAllAppsByConfig(configId);
-        return new ResponseEntity<>(appDtoList, HttpStatus.OK);
-
-    }
 
     @PostMapping("/createConfig")
-    public ResponseEntity<List<ConfigDto>> createConfig(@RequestParam int featureId, @RequestBody ConfigDto configDto) {
-        List<ConfigDto> responseDto = configService.createConfig(featureId, configDto);
+    public ResponseEntity<List<ConfigDto>> createConfig( @RequestBody ConfigDto configDto) {
+        List<ConfigDto> responseDto = configService.createConfig( configDto);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
     @PutMapping("/updateConfig")
     public ResponseEntity<List<ConfigDto>> updateConfig(@RequestParam int featureId, @RequestParam String configKey, @RequestBody List<String> configValuesList) {
-        List<ConfigDto> configDto = configService.updateConfig(featureId,configKey, configValuesList);
+        List<ConfigDto> configDto = configService.updateConfig(featureId, configKey, configValuesList);
         return new ResponseEntity<>(configDto, HttpStatus.OK);
 
     }
@@ -76,9 +60,4 @@ public class ConfigController {
     }
 
 
-
-    @GetMapping("/config/predefinedNames")
-    public List<String> getPredefinedConfigNames() {
-        return Arrays.asList(predefinedConfigNames.split(","));
-    }
 }

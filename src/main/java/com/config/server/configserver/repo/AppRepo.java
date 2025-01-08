@@ -11,12 +11,5 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface AppRepo extends JpaRepository<AppEntity, Integer> {
-
-    @Query("SELECT f FROM FeatureEntity f JOIN f.apps a WHERE a.id = :appId")
-    public List<FeatureEntity> getAllFeaturesByApp(@Param("appId") int appId);
-
-    @Query("select c from ConfigEntity c join c.apps a where a.id=:appId")
-    public List<ConfigEntity> getAllConfigsByApp(@Param("appId") int appId);
-
-
+    
 }

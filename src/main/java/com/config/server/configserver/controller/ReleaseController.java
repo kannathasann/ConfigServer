@@ -17,9 +17,9 @@ public class ReleaseController {
     ReleaseService releaseService;
 
     @GetMapping("/getAllReleaseByConfig")
-    public ResponseEntity<List<ReleaseDto>> getAllReleaseByConfig(@RequestParam String configkey, @RequestParam String name)
+    public ResponseEntity<List<ReleaseDto>> getAllReleaseByConfig(@RequestParam String configkey, @RequestParam String configQuery)
     {
-        List<ReleaseDto> releaseStrategyDtoList= releaseService.getAllReleaseByConfig(configkey, name);
+        List<ReleaseDto> releaseStrategyDtoList= releaseService.getAllReleaseByConfig(configkey, configQuery);
         return new ResponseEntity<>(releaseStrategyDtoList, HttpStatus.OK);
 
     }

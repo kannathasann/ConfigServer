@@ -36,29 +36,25 @@ public class FeatureServiceImpl implements FeatureService {
     }
 
     @Override
-    public List<AppDto> getAllAppsByFeature(int featureId) {
-        List<AppEntity> appEntityList = featureRepo.getAllAppsByFeature(featureId);
-        List<AppDto> appDtoList = appEntityList.stream().map(appEntity -> {
-            AppDto appDto = new AppDto();
-            BeanUtils.copyProperties(appEntity, appDto);
-            return appDto;
+    public List<FeatureDto> getAllFeaturesByApp(int id) {
+        List<FeatureEntity> featureEntityList = featureRepo.findAllByAppId(id);
+        List<FeatureDto> featureDtoList = featureEntityList.stream().map(featureEntity -> {
+            FeatureDto featureDto = new FeatureDto();
+            BeanUtils.copyProperties(featureEntity, featureDto);
+            return featureDto;
         }).collect(Collectors.toList());
-        return appDtoList;
+        return featureDtoList;
     }
 
 
     @Override
-    @Transactional
-    public FeatureDto createFeature(int appId, FeatureDto featureDto) {
-        FeatureEntity featureEntity= new FeatureEntity();
+    public FeatureDto createFeature(FeatureDto featureDto) {
+        FeatureEntity featureEntity = new FeatureEntity();
         BeanUtils.copyProperties(featureDto, featureEntity);
-        FeatureEntity savedEntity=featureRepo.save(featureEntity);
-        int featureId= savedEntity.getId();
-
-       featureRepo.createAppFeature(appId, featureId);
-       FeatureDto responseDto= new FeatureDto();
-       BeanUtils.copyProperties(savedEntity, responseDto);
-       return responseDto;
+        FeatureEntity savedEntity = featureRepo.save(featureEntity);
+        FeatureDto responseDto = new FeatureDto();
+        BeanUtils.copyProperties(savedEntity, responseDto);
+        return responseDto;
 
     }
 
