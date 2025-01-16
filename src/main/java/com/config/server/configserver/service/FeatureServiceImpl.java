@@ -10,6 +10,9 @@ import com.config.server.configserver.repo.FeatureRepo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,13 +39,14 @@ public class FeatureServiceImpl implements FeatureService {
     }
 
     @Override
-    public List<FeatureDto> getAllFeaturesByApp(int id) {
-        List<FeatureEntity> featureEntityList = featureRepo.findAllByAppId(id);
-        List<FeatureDto> featureDtoList = featureEntityList.stream().map(featureEntity -> {
+    public Page<FeatureDto> getAllFeaturesByApp(int id, int page, int size) {
+        Pageable pageable= PageRequest.of(page, size);
+        Page<FeatureEntity> featureEntityList = featureRepo.findAllByAppId(id, pageable);
+        Page<FeatureDto> featureDtoList = featureEntityList.map(featureEntity -> {
             FeatureDto featureDto = new FeatureDto();
             BeanUtils.copyProperties(featureEntity, featureDto);
             return featureDto;
-        }).collect(Collectors.toList());
+        });
         return featureDtoList;
     }
 

@@ -5,6 +5,7 @@ import com.config.server.configserver.dto.ConfigDto;
 import com.config.server.configserver.dto.FeatureDto;
 import com.config.server.configserver.service.FeatureService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +25,8 @@ public class FeatureController {
     }
 
     @GetMapping("/getAllFeaturesByApp/{id}")
-    public ResponseEntity<List<FeatureDto>> getAllFeaturesByApp(@PathVariable int id) {
-        List<FeatureDto> featureDtoList = featureService.getAllFeaturesByApp(id);
+    public ResponseEntity<Page<FeatureDto>> getAllFeaturesByApp(@PathVariable int id, @RequestParam int page, @RequestParam int size) {
+        Page<FeatureDto> featureDtoList = featureService.getAllFeaturesByApp(id, page, size);
         return new ResponseEntity<>(featureDtoList, HttpStatus.OK);
     }
 

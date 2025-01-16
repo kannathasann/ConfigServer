@@ -4,6 +4,8 @@ import com.config.server.configserver.entity.AppEntity;
 import com.config.server.configserver.entity.ConfigEntity;
 import com.config.server.configserver.entity.FeatureEntity;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +16,7 @@ import java.util.List;
 public interface ConfigRepo extends JpaRepository<ConfigEntity, Integer> {
 
 
-    public List<ConfigEntity> findAllByFeatureId(int featureId);
+    public Page<ConfigEntity> findAllByFeatureId(int featureId, Pageable pageable);
 
     @Modifying
     @Transactional

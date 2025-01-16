@@ -7,8 +7,13 @@ import com.config.server.configserver.entity.AppEntity;
 import com.config.server.configserver.entity.ConfigEntity;
 import com.config.server.configserver.entity.FeatureEntity;
 import com.config.server.configserver.repo.AppRepo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -17,19 +22,26 @@ import java.util.stream.Collectors;
 
 @Service
 public class AppServiceImpl implements AppService {
+    private static  final Logger logger=LoggerFactory.getLogger(AppServiceImpl.class);
 
     @Autowired
     AppRepo appRepo;
 
-    public List<AppDto> getAllApps() {
-        List<AppEntity> appEntityList = appRepo.findAll();
-        List<AppDto> appDtoList = appEntityList.stream().map(appEntity ->
+    public Page<AppDto> getAllApps(int page, int size) {
+        long startTime=System.currentTimeMillis();
+        logger.info("get all apps method entered...");
+        Pageable pageable= PageRequest.of(page, size);
+        Page<AppEntity> appEntityList = appRepo.findAll(pageable);
+        Page<AppDto> appDtoList = appEntityList.map(appEntity ->
         {
             AppDto appDto = new AppDto();
             BeanUtils.copyProperties(appEntity, appDto);
             return appDto;
-        }).collect(Collectors.toList());
+        });
+        logger.info("total time taken " +(System.currentTimeMillis()-startTime)/1000.0+ " seconds");
         return appDtoList;
+
+
     }
 
     @Override
@@ -41,6 +53,12 @@ public class AppServiceImpl implements AppService {
         BeanUtils.copyProperties(appEntity, response);
         return response;
 
+    }
+
+    @Override
+    public String deleteApp(int id) {
+        appRepo.deleteById(id);
+         return "deleted successfulllyyy...";
     }
 
 

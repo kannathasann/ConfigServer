@@ -5,6 +5,7 @@ import com.config.server.configserver.dto.ConfigDto;
 import com.config.server.configserver.dto.FeatureDto;
 import com.config.server.configserver.service.AppService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +20,9 @@ public class AppController {
     AppService appService;
 
     @GetMapping("/getAllApps")
-    public ResponseEntity<List<AppDto>> getAllApps()
+    public ResponseEntity<Page<AppDto>> getAllApps(@RequestParam int page, @RequestParam int size)
     {
-        List<AppDto> appDtoList= appService.getAllApps();
+        Page<AppDto> appDtoList= appService.getAllApps(page, size);
         return new ResponseEntity<>(appDtoList, HttpStatus.OK);
     }
 
@@ -30,6 +31,12 @@ public class AppController {
     {
         AppDto response=appService.createApp(appDto);
         return new ResponseEntity<>(response,HttpStatus.OK);
+    }
 
+    @DeleteMapping("/deleteApp/{id}")
+    public ResponseEntity<String> deleteApp(@PathVariable int id)
+    {
+          String response= appService.deleteApp(id);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

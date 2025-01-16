@@ -6,6 +6,7 @@ import com.config.server.configserver.dto.FeatureDto;
 import com.config.server.configserver.service.ConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,30 +33,30 @@ public class ConfigController {
     }
 
     @GetMapping("/getAllConfigsByFeature/{id}")
-    public ResponseEntity<List<ConfigDto>> getAllConfigsByFeature(@PathVariable("id") int featureId) {
-        List<ConfigDto> configDtoList = configService.getAllConfigsByFeature(featureId);
+    public ResponseEntity<Page<ConfigDto>> getAllConfigsByFeature(@PathVariable("id") int featureId, @RequestParam int page, @RequestParam int size) {
+        Page<ConfigDto> configDtoList = configService.getAllConfigsByFeature(featureId, page, size);
         return new ResponseEntity<>(configDtoList, HttpStatus.OK);
 
     }
 
 
     @PostMapping("/createConfig")
-    public ResponseEntity<List<ConfigDto>> createConfig( @RequestBody ConfigDto configDto) {
-        List<ConfigDto> responseDto = configService.createConfig( configDto);
+    public ResponseEntity<ConfigDto> createConfig( @RequestBody ConfigDto configDto) {
+        ConfigDto responseDto = configService.createConfig( configDto);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
     @PutMapping("/updateConfig")
-    public ResponseEntity<List<ConfigDto>> updateConfig(@RequestParam int featureId, @RequestParam String configKey, @RequestBody List<String> configValuesList) {
-        List<ConfigDto> configDto = configService.updateConfig(featureId, configKey, configValuesList);
-        return new ResponseEntity<>(configDto, HttpStatus.OK);
+    public ResponseEntity<String> updateConfig(@RequestParam int featureId, @RequestParam String configKey, @RequestBody List<String> configValuesList) {
+        String response = configService.updateConfig(featureId, configKey, configValuesList);
+        return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
 
-    @DeleteMapping("/deleteConfig")
-    public ResponseEntity<String> deleteConfig(@RequestParam String configKey) {
+    @DeleteMapping("/deleteConfig/{id}")
+    public ResponseEntity<String> deleteConfig(@PathVariable int id) {
 
-        String response = configService.deleteConfig(configKey);
+        String response = configService.deleteConfig(id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
