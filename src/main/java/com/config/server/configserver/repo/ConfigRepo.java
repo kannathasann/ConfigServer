@@ -23,8 +23,5 @@ public interface ConfigRepo extends JpaRepository<ConfigEntity, Integer> {
     @Query("update ConfigEntity c set c.configValues=:configValue where c.configKey=:configKey ")
     public int updateConfig(String configKey, String configValue);
 
-    @Modifying
-    @Transactional
-    @Query("delete from ConfigEntity c where c.configKey=:configKey")
-    public int deleteConfig(String configKey);
+
 }

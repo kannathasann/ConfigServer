@@ -69,4 +69,10 @@ public class FeatureServiceImpl implements FeatureService {
         return "deleted successfully..";
 
     }
+
+    @Override
+    public List<String> getAllAppsByFeature(String featureName) {
+        List<String> appList=featureRepo.getAllAppsByFeature(featureName);
+        return appList;
+    }
 }

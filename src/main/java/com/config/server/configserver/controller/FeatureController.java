@@ -42,4 +42,12 @@ public class FeatureController {
         String result = featureService.deleteFeature(id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+
+    @GetMapping("/getAllAppsByFeature")
+    public ResponseEntity<List<String>> getAllAppsByFeature(@RequestParam String featureName)
+    {
+        List<String> appList=featureService.getAllAppsByFeature(featureName);
+        return new ResponseEntity<>(appList, HttpStatus.OK);
+    }
 }
