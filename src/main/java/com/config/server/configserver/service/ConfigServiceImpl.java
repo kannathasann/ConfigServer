@@ -3,10 +3,12 @@ package com.config.server.configserver.service;
 import com.config.server.configserver.dto.AppDto;
 import com.config.server.configserver.dto.ConfigDto;
 import com.config.server.configserver.dto.FeatureDto;
+import com.config.server.configserver.dto.ReleaseDto;
 import com.config.server.configserver.entity.AppEntity;
 import com.config.server.configserver.entity.ConfigEntity;
 import com.config.server.configserver.entity.FeatureEntity;
 import com.config.server.configserver.exception.ResourceNotFoundException;
+import com.config.server.configserver.exception.SqlQueryException;
 import com.config.server.configserver.repo.ConfigRepo;
 import com.config.server.configserver.repo.FeatureRepo;
 import jakarta.transaction.Transactional;
@@ -16,11 +18,13 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,6 +39,8 @@ public class ConfigServiceImpl implements ConfigService {
     @Autowired
     ConfigRepo configRepo;
 
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
     @Autowired
     RedisTemplate<String, Object> redisTemplate;
@@ -70,9 +76,31 @@ public class ConfigServiceImpl implements ConfigService {
     @Transactional
 //    @CachePut(value = "featureConfigs", key = "#configDto.featureId.toString()")
     public ConfigDto createConfig(ConfigDto configDto) {
-        // Convert DTO to Entity
+
+        try
+        {
+            String configQuery= configDto.getConfigQuery();
+            List<ReleaseDto> releaseStrategyDtoList = jdbcTemplate.query(configQuery, (resultSet, rows) ->
+            {
+                ReleaseDto releaseStrategyDto = new ReleaseDto();
+                releaseStrategyDto.setId(resultSet.getInt(1));
+                releaseStrategyDto.setName(resultSet.getString(2));
+                return releaseStrategyDto;
+            });
+
+        }
+        catch(DataIntegrityViolationException e)
+        {throw new SqlQueryException("please give valid query...first select id then name");
+
+        }
+        catch(Exception e)
+        {
+            throw new SqlQueryException("Please give valid query...recheck your table and column name");
+
+        }
         ConfigEntity configEntity = new ConfigEntity();
         BeanUtils.copyProperties(configDto, configEntity);
+
         // Save the new ConfigEntity
         ConfigEntity savedEntity = configRepo.save(configEntity);
         ConfigDto response = new ConfigDto();

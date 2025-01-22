@@ -9,19 +9,21 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ConfigServerExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<String> getErrorResponse(ResourceNotFoundException e)
-    {
+    public ResponseEntity<String> getErrorResponse(ResourceNotFoundException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 
+    }
+
+    @ExceptionHandler(SqlQueryException.class)
+    public ResponseEntity<String> getErrorResponse(SqlQueryException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> getErrorResponse(Exception e)
-    {
+    public ResponseEntity<String> getErrorResponse(Exception e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 
     }
-
 
 
 }
